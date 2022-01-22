@@ -84,19 +84,19 @@
 
 效果如下图
 
-![cve](doc\1.jpeg)
+![](doc/1.jpeg)
 
 **当点击CNNVD的消息卡片时，会跳转到相对应的Web端以表格形式展示**，如下图：
 
-![cnnvd](doc\2.jpeg)
+![](doc/2.jpeg)
 
 **点击微软漏洞消息的漏洞卡片时，也会跳转到相对应的Web端表格展示**，如下图：
 
-![微软](doc\3.jpeg)
+![](doc/3.jpeg)
 
 **点击Github的漏洞消息通知时，跳转到相对于的Github地址**，如下图：
 
-![github](doc\4.jpeg)
+![](doc/4.jpeg)
 
 ## 项目部署
 
@@ -151,7 +151,7 @@ yum install -y nginx
 
 装好后，查看版本，检查是否安装成功，如下图：
 
-![img](doc\5.png)
+![img](doc/5.png)
 
 然后找到nginx的配置文件，具体位置为：
 
@@ -182,15 +182,15 @@ server {
 
 **如果修改，请修改monitor.py的24行和excel_html.py的11行。**
 
-![image-20220122141836235](doc\6.png)
+![](doc/6.png)
 
-![image-20220122142248502](doc\7.png)
+![](doc/7.png)
 
 ### 配置企业微信推送
 
 这个需要先到企业微信创建一个企业，并自建一个应用，**获取到自定义应用的 Secret和注册的企业 corpid**，就可以了。修改位置在**moniter.py文件的14行至17行**，如下图：
 
-![image-20220122142707821](doc\8.png)
+![](doc/8.png)
 
 启动监控脚本，命令如下：
 
