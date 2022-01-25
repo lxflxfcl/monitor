@@ -1,5 +1,8 @@
-import datetime
+#!/usr/bin/python3
+# -*- coding:utf-8 -*-
+# @Author : 小艾
 
+import datetime
 import requests
 
 
@@ -40,7 +43,7 @@ def wechat_MS():
     flag = str(datetime.datetime.now().date()) +"_ms"
     data = {
         # "chatid" : "xxx",
-        #"touser": "LiuXueFeng",  # 向这些用户账户发送
+        #"touser": "Liu******ng",  # 向这些用户账户发送，多个用户用|隔开
          "toparty": "1",  # 向群聊部门发送
         # "msgtype" : "text",
         "agentid": 1000003,  # 应用的 id 号

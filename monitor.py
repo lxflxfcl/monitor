@@ -1,4 +1,6 @@
+#!/usr/bin/python3
 # -*- coding:utf-8 -*-
+# @Author : 小艾
 
 import os
 import time

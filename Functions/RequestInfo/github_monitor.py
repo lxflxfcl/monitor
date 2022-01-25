@@ -2,8 +2,6 @@
 # -*- coding:utf-8 -*-
 # @Author : 小艾
 
-# https://my.oschina.net/u/4581868/blog/4380482
-# https://github.com/kiang70/Github-Monitor
 
 import datetime
 
@@ -17,7 +15,7 @@ def wechat_data(text,msg,cve_url):
 
     data = {
         # "chatid" : "xxx",
-        # "touser" : "LiuXueFeng",   # 向这些用户账户发送
+        # "touser" : "Li********ng",   # 向这些用户账户发送
         "toparty": "1",  # 向群聊部门发送
         # "msgtype" : "text",
         "agentid": 1000003,  # 应用的 id 号
