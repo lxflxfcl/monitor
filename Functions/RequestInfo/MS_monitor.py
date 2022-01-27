@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
-# @Author : 小艾
+# @Author : 小艾、reader-l
 
 import datetime
+
 import requests
 
 
@@ -36,17 +37,18 @@ def getMSDATA(ms_url,cve_nums):
     #print(cve_info_MS)
     return cve_info_MS
 #自定义推送数据格式和内容
-def wechat_MS():
+def wechat_MS(touser,toparty,agentid,urls):
+
     year = str(datetime.datetime.now().year)
     month = str(datetime.datetime.now().month)
     day = str(datetime.datetime.now().day)
     flag = str(datetime.datetime.now().date()) +"_ms"
     data = {
         # "chatid" : "xxx",
-        #"touser": "Liu******ng",  # 向这些用户账户发送，多个用户用|隔开
-         "toparty": "1",  # 向群聊部门发送
+        "touser": touser,  # 向这些用户账户发送
+         "toparty": toparty,  # 向群聊部门发送
         # "msgtype" : "text",
-        "agentid": 1000003,  # 应用的 id 号
+        "agentid": agentid,  # 应用的 id 号
         # "text" : {
         #     "content" : "一看到你，我就泛起微笑^_^。"
         # },
@@ -54,7 +56,7 @@ def wechat_MS():
         "textcard": {
             "title": "微软官方发布最新的CVE漏洞信息啦",
             "description": "<div class=\"gray\">" + year + "年" + month + "月" + day + "日</div> <div class=\"normal\">最新官方微软漏洞情报</div><div class=\"normal\">请注意查收</div><div class=\"highlight\">新鲜的</div>",
-            "url": "http://www.xfclweb.cn/"+flag+".html",
+            "url": urls+flag+".html",
             "btntxt": "获取最新"
         },
         "safe": 0

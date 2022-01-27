@@ -1,8 +1,11 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
-# @Author : 小艾
+# @Author : 小艾、reader-l
+
+# -*- coding:utf-8 -*-
 
 import os
+import sys
 import time
 from io import BytesIO
 import xlwt
@@ -18,12 +21,35 @@ from Functions.Commons.translate import get_cve_des_zh, translate
 from Functions.RequestInfo.github_monitor import wechat_data
 from Functions.RequestInfo.MS_monitor import getMSDATA, wechat_MS
 
+#企业微信API相关配置
+Secret="pyUtd3**********************************UEpNiQ"   #自定义应用的 Secret 举例：Secret="pyU*********jAWKjUEpNiQ"
+
+corpid="wwb*************c71708"                            #注册的企业 corpid  举例：corpid="wwb*********71708"
+
+github_headers="ghp_ZnuvJYgI******************5Pt2KhQqN"   #github_token   举例：github_headers="ghp_Zn*****Pt2KhQqN"
+
+#企业微信推送群聊部门及个人相关配置
+touser="Li*******eng"   #个人推送配置(选择群聊部门，请把此参数置为空) ,向这些用户账户发送，可以多人用 | 隔开 举例：touser="ZhangSan | LiShi"
+
+toparty=""          #群聊部门配置(选择个人推送配置，请把此参数置为空)，向群聊部门发送 举例：toparty="1"
+
+agentid=10****03      #ID配置  应用的 id 号 举例：agentid=1000003  注意：这里填整型
+
+urls="http://www.xxxxxx.com/"  #域名/IP配置 举例：urls="http://www.xxxx.com/"
+
 github_headers = {
-    'Authorization': "ghp_Znu***********************5Pt2KhQqN"  # 替换自己的github token     https://github.com/settings/tokens/new
+    'Authorization': github_headers  # 替换自己的github token     https://github.com/settings/tokens/new
 }
 last_total_count = 0
-#保存文件的路径
-dir_mon = "/usr/share/nginx/html/download/"
+
+#配置文件保存路径
+#D:\Git_Test\monitor\monitor
+#/usr/share/nginx/html/download/
+if sys.platform == "win32":
+    dir_mon = "{home}\\monitor\\".format(home=os.path.expanduser('~'))
+else:
+    dir_mon = "/usr/share/nginx/html/download/"
+
 #主函数
 def main():
     excel_row = 1
@@ -105,16 +131,16 @@ def main():
 
                         lever_test = str(danger_level_nums())
                         # 周五推送危险等级数量
-                        data = wechat_cnnvd(lever_test)
-                        print(lever_test,data)
+                        data = wechat_cnnvd(lever_test,touser,toparty,agentid,urls)
+                        print(lever_test,data[0])
                         # 推送微信
-                        wechat_qiye(data[0])
+                        wechat_qiye(data[0],Secret,corpid)
                         #推送邮箱
                         #dom = list_diction_to_html_cnnvd(list_work)
                         #取出要发送的链接
                         data_mail =data[2]
                         # 推送邮箱
-                        #main_user(str(data_mail))
+                       # main_user(str(data_mail))
                         send_msg_flag = False
                     pageNo = 1 #重置页数
                     flag = False
@@ -153,14 +179,14 @@ def main():
                     wechat_is_flag = True
             if wechat_is_flag:
                 #推送微信
-                data = wechat_MS()
+                data = wechat_MS(touser,toparty,agentid,urls)
                 data_ms = data[0]
                 print(data_ms)
-                wechat_qiye(data_ms)
+                wechat_qiye(data_ms,Secret,corpid)
                 # 取出要发送的链接
                 data_mail = data[2]
                 #推送邮箱
-                #main_user(str(data_mail))
+                main_user(str(data_mail))
                 wechat_is_flag = False
             f_ms.save(stream_ms)  # 保存数据到内存中
             value_ms = stream_ms.getvalue()  # 从内存中取出数据
@@ -198,12 +224,13 @@ def main():
                 print(cve_name)
                 cve_zh = get_cve_des_zh(cve_name)
                 msg = "CVE编号：" + cve_name + "\r\n" + "CVE描述：" + cve_zh
-                url = req['items'][0]['html_url']
-                print(url)
+                cve_url = req['items'][0]['html_url']
+                print(cve_url)
                 # url2 = getNews()[0]
                 # 推送微信
-                data = wechat_data(text, msg, url)
-                wechat_qiye(data)
+                data = wechat_data(touser,toparty,agentid,text,msg,cve_url)
+                print(data)
+                wechat_qiye(data,Secret,corpid)
             time.sleep(60*60*24) #设置定时，每24小时查看一次
 
     except KeyboardInterrupt:

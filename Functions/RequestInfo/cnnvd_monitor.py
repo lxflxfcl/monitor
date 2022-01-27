@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
-# @Author : 小艾
+# @Author : 小艾、reader-l
 
 import datetime
 
@@ -154,17 +154,17 @@ def slack_messge():
 
 
 #自定义推送数据格式和内容
-def wechat_cnnvd(lever_test):
+def wechat_cnnvd(lever_test,touser,toparty,agentid,urls):
     year = str(datetime.datetime.now().year)
     month = str(datetime.datetime.now().month)
     day = str(datetime.datetime.now().day)
     flag = str(datetime.datetime.now().date()) +"_cnnvd"
     data = {
         # "chatid" : "xxx",
-        # "touser" : "Li**********ng",   # 向这些用户账户发送
-        "toparty": "1",  # 向群聊部门发送
+         "touser" : touser,   # 向这些用户账户发送
+        "toparty": toparty,  # 向群聊部门发送
         # "msgtype" : "text",
-        "agentid": 1000003,  # 应用的 id 号
+        "agentid": agentid,  # 应用的 id 号
         # "text" : {
         #     "content" : "一看到你，我就泛起微笑^_^。"
         # },
@@ -172,7 +172,7 @@ def wechat_cnnvd(lever_test):
         "textcard": {
             "title": "今天的CVE到啦",
             "description": "<div class=\"gray\">"+year+"年"+month+"月"+day+"日</div> <div class=\"normal\">最新CNNVD漏洞情报</div><div class=\"highlight\">"+lever_test+"</div><div class=\"highlight\">请注意查收，嘿嘿嘿</div>",
-            "url": "http://www.xfclweb.cn/"+flag+".html",
+            "url": urls +flag+".html",
             "btntxt": "获取最新CNNVD的文件"
         },
         "safe": 0

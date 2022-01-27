@@ -1,14 +1,18 @@
 # -*- coding:utf-8 -*-
 
 
-
+import sys
 import datetime
 import os
 import dominate
 from dominate.tags import *
 
 #保存文件的路径
-dir_mon = "/usr/share/nginx/html/download/"
+if sys.platform == "win32":
+    dir_mon = "{home}\\monitor\\".format(home=os.path.expanduser('~'))
+else:
+    dir_mon = "/usr/share/nginx/html/download/"
+   
 # 创建excel生成静态html页面的函数
 def list_diction_to_html_cnnvd(list_work):
     # 用dominate函数生成静态html页面

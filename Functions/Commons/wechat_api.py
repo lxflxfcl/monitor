@@ -8,13 +8,13 @@ import json
 import requests
 
 access_token = ''
-def wechat_qiye(data):
+def wechat_qiye(data,Secret,corpid):
 
     global access_token
     # 自定义应用的 Secret
-    Secret = "pyU***********************KjUEpNiQ"
+    #Secret = secret
     # 注册的企业 corpid
-    corpid = 'wwbf**************1708'
+    #corpid = corpid
     url = 'https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={}&corpsecret={}'
 
     '''
