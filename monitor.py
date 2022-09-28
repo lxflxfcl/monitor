@@ -22,20 +22,20 @@ from Functions.RequestInfo.github_monitor import wechat_data
 from Functions.RequestInfo.MS_monitor import getMSDATA, wechat_MS
 
 #企业微信API相关配置
-Secret="pyUtd3**********************************UEpNiQ"   #自定义应用的 Secret 举例：Secret="pyU*********jAWKjUEpNiQ"
+Secret="pyUtd3*************WKjUEpNiQ"   #自定义应用的 Secret 举例：Secret="pyU*********jAWKjUEpNiQ"
 
-corpid="wwb*************c71708"                            #注册的企业 corpid  举例：corpid="wwb*********71708"
+corpid="wwb*********c71708"                            #注册的企业 corpid  举例：corpid="wwb*********71708"
 
-github_headers="ghp_ZnuvJYgI******************5Pt2KhQqN"   #github_token   举例：github_headers="ghp_Zn*****Pt2KhQqN"
+github_headers="ghp_Z*************n4a5Pt2KhQqN"   #github_token   举例：github_headers="ghp_Zn*****Pt2KhQqN"
 
 #企业微信推送群聊部门及个人相关配置
-touser="Li*******eng"   #个人推送配置(选择群聊部门，请把此参数置为空) ,向这些用户账户发送，可以多人用 | 隔开 举例：touser="ZhangSan | LiShi"
+touser="Liu******ng"   #个人推送配置(选择群聊部门，请把此参数置为空) ,向这些用户账户发送，可以多人用 | 隔开 举例：touser="ZhangSan | LiShi"
 
 toparty=""          #群聊部门配置(选择个人推送配置，请把此参数置为空)，向群聊部门发送 举例：toparty="1"
 
-agentid=10****03      #ID配置  应用的 id 号 举例：agentid=1000003  注意：这里填整型
+agentid=10****03     #ID配置  应用的 id 号 举例：agentid=1000003  注意：这里填整型
 
-urls="http://www.xxxxxx.com/"  #域名/IP配置 举例：urls="http://www.xxxx.com/"
+urls="http://www.xxxx.com/"  #域名/IP配置 举例：urls="http://www.xxxx.com/"
 
 github_headers = {
     'Authorization': github_headers  # 替换自己的github token     https://github.com/settings/tokens/new
@@ -46,7 +46,7 @@ last_total_count = 0
 #D:\Git_Test\monitor\monitor
 #/usr/share/nginx/html/download/
 if sys.platform == "win32":
-    dir_mon = "{home}\\monitor\\".format(home=os.path.expanduser('~'))
+    dir_mon = "{home}\\".format(home=os.path.expanduser('~'))
 else:
     dir_mon = "/usr/share/nginx/html/download/"
 
@@ -76,7 +76,7 @@ def main():
             #quit(0)
             #该while循环是操作cnnvd的。
             while True:
-                url = 'http://www.cnnvd.org.cn/web/vulnerability/querylist.tag?pageno=' + str(pageNo) + '&repairLd='
+                url = 'http://123.124.177.30/web/vulnerability/querylist.tag?pageno=' + str(pageNo) + '&repairLd='
                 header = {
                     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.80 Safari/537.36',
                     'Connection': 'keep-alive',
@@ -91,7 +91,7 @@ def main():
                 for link in links:
                     try:
                         k = str(link.attrs['href'])
-                        one = getURLDATA("http://www.cnnvd.org.cn" + k)  # 获取每一个单独漏洞的详细信息页面
+                        one = getURLDATA("http://123.124.177.30" + k)  # 获取每一个单独漏洞的详细信息页面
                         values = "'" + one[0] + "'"
                         #print(values)
                         if is_not_exist(one):
@@ -100,7 +100,7 @@ def main():
                                 sheet1.write(excel_row, i - 1 , one[i - 1])
                             excel_row = excel_row + 1
                             insertTo(values)
-                           # print(values)
+                            #print(values)
                            # pageNo = pageNo + 1
                             send_msg_flag = True
                         else:
@@ -108,7 +108,7 @@ def main():
                             flag = True
                             break
                     except Exception as e:
-                        print("http://www.cnnvd.org.cn" + k)
+                        print("http://123.124.177.30" + k)
                         break
                 if flag:
                     f.save(stream)  # 保存数据到内存中

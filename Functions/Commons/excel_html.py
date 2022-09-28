@@ -9,7 +9,7 @@ from dominate.tags import *
 
 #保存文件的路径
 if sys.platform == "win32":
-    dir_mon = "{home}\\monitor\\".format(home=os.path.expanduser('~'))
+    dir_mon = "{home}\\data\\".format(home=os.path.expanduser('~'))
 else:
     dir_mon = "/usr/share/nginx/html/download/"
    
