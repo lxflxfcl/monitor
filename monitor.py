@@ -149,11 +149,11 @@ def main():
                         corpid = cfg['wechatAPI']['corpid']
                         wechat_qiye(data[0],Secret,corpid)
                         #推送邮箱
-                        dom = list_diction_to_html_cnnvd(list_work)
+                        #dom = list_diction_to_html_cnnvd(list_work)
                         #取出要发送的链接
-                        data_mail =data[2]
+                        #data_mail =data[2]
                         # 推送邮箱
-                        main_user(str(data_mail))
+                        #main_user(str(data_mail))
                         send_msg_flag = False
                     pageNo = 1 #重置页数
                     flag = False
@@ -206,7 +206,7 @@ def main():
                 corpid = cfg['wechatAPI']['corpid']
                 wechat_qiye(data_ms,Secret,corpid)
                 # 取出要发送的链接
-                data_mail = data[2]
+               # data_mail = data[2]
                 #推送邮箱
                 #main_user(str(data_mail))
                 wechat_is_flag = False
