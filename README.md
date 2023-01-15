@@ -50,8 +50,6 @@
 
 ~~现在企业微信配置**只需要修改monitor.py文件中的24-38行**就可以了。如下图：~~
 
-![](doc/12.png)
-
 ### 项目目录结构
 
 ```
@@ -123,19 +121,17 @@
 
 效果如下图
 
-![](doc/1.jpeg)
+![](https://lxflxf.oss-cn-beijing.aliyuncs.com/1.jpeg)
 
 **当点击CNNVD的消息卡片时，会跳转到相对应的Web端以表格形式展示**，如下图：
 
-![](doc/2.jpeg)
+![](https://lxflxf.oss-cn-beijing.aliyuncs.com/2.jpeg)
 
 **点击微软漏洞消息的漏洞卡片时，也会跳转到相对应的Web端表格展示**，如下图：
 
 ![](doc/3.jpeg)
 
-**点击Github的漏洞消息通知时，跳转到相对于的Github地址**，如下图：
-
-![](doc/4.jpeg)
+~~**点击Github的漏洞消息通知时，跳转到相对于的Github地址**，如下图：~~
 
 ## 项目部署
 
@@ -148,24 +144,7 @@
 首先安装依赖，如下：
 
 ```
-import os
-import time
-from io import BytesIO
-import xlwt
-from xlrd import open_workbook
-import datetime
-import dominate
-from dominate.tags import *
-import requests
-import smtplib
-from email.mime.text import MIMEText
-from email.header import Header
-import hashlib
-from lxml import etree
-import json
-from bs4 import BeautifulSoup
-import re
-import sqlite3
+pip install -r requirements.txt
 ```
 
 然后进行数据库初始化，初始化时生成log文件夹用来存放生成的日志文件。命令如下：
@@ -173,8 +152,6 @@ import sqlite3
 ```python
 python3 installDb.py
 ```
-
-
 
 ### 环境搭建
 
@@ -208,33 +185,29 @@ server {
     # Load configuration files for the default server block.
     include /etc/nginx/default.d/*.conf;
     location / {
-            root /usr/share/nginx/html/download;
+            root /usr/share/nginx/html/download; 
     autoindex on; #开启索引功能
     autoindex_exact_size off; #关闭计算文件确切大小(bytes)
     autoindex_localtime on; #显示本机时间
+	}
 }
 ```
 
-**注意生成文件位置**，我这里是`/usr/share/nginx/html/download` ，看个人爱好。
+**注意生成文件位置**，我这里是`/usr/share/nginx/html/download` ，看个人爱好。(现在只需要在配置文件config.ini中配置即可)
 
-**如果修改，请修改monitor.py的24行和excel_html.py的11行。**
-
-![](doc/6.png)
-
-![](doc/7.png)
+~~**如果修改，请修改monitor.py的24行和excel_html.py的11行。**~~
 
 ~~### 配置企业微信推送~~
 ~~这个需要先到企业微信创建一个企业，并自建一个应用，**获取到自定义应用的 Secret和注册的企业 corpid**，就可以了。修改位置在moniter.py文件的14行至17行，如下图：~~
-![](doc/8.png)
+
 #### ~~自定义推送内容修改事项~~
-~~根据自己实际情况修改 RequestInfo文件夹下的文件。**如果是自己使用，请注释掉toparty，取消touser的注释~~**
-![](doc/9.png)
+~~根据自己实际情况修改 RequestInfo文件夹下的文件。**如果是自己使用，请注释掉toparty，取消touser的注释~~
 
 **应用ID**和**部门ID**在企业微信后台如下位置
 
-![](doc/10.png)
+![](https://lxflxf.oss-cn-beijing.aliyuncs.com/10.png)
 
-![](doc/11.png)
+![](https://lxflxf.oss-cn-beijing.aliyuncs.com/11.png)
 
 启动监控脚本，命令如下：
 
