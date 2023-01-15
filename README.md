@@ -38,7 +38,7 @@
 
 目前实现了监控先知社区、跳跳糖社区、奇安信攻防社区三个社区的文章监控。启动脚本后，实现的效果如下图
 
-![图片](D:\codego\monitor\monitor-main\doc\16.png)
+![图片](https://lxflxf.oss-cn-beijing.aliyuncs.com/16.png)
 
 后续有时间的话应该会优化一下安全社区推送的相关代码逻辑，现在的代码复用太高了。有机会也会优化一下邮件推送。
 
@@ -165,7 +165,7 @@ yum install -y nginx
 
 装好后，查看版本，检查是否安装成功，如下图：
 
-![img](doc/5.png)
+![img](https://lxflxf.oss-cn-beijing.aliyuncs.com/5.png)
 
 然后找到nginx的配置文件，具体位置为：
 
