@@ -1,17 +1,21 @@
 # -*- coding:utf-8 -*-
-
-
+import configparser
 import sys
 import datetime
 import os
 import dominate
 from dominate.tags import *
 
+cfg=configparser.ConfigParser()
+cfg.read('config.ini',encoding='utf-8')   #读取配置文件 防止乱码
+cfg.defaults()						  #默认配置的内容 可以当字典用
+list(cfg)
+linux_path = cfg['linuxpath']['path']
 #保存文件的路径
 if sys.platform == "win32":
     dir_mon = "{home}\\data\\".format(home=os.path.expanduser('~'))
 else:
-    dir_mon = "/usr/share/nginx/html/download/"
+    dir_mon = linux_path
    
 # 创建excel生成静态html页面的函数
 def list_diction_to_html_cnnvd(list_work):

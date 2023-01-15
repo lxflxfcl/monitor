@@ -8,52 +8,56 @@ import os
 import sys
 import time
 from io import BytesIO
+import configparser
 import xlwt
 
 from Functions.Commons.excel import sheet_init, excel_sheet_processor, sheet_init_ms
 from Functions.Commons.excel_html import  list_diction_to_html_ms, list_diction_to_html_cnnvd, save_dom_to_html_cnnvd, save_dom_to_html_ms
 from Functions.Commons.wechat_api import wechat_qiye
+from Functions.RequestInfo.SEC_node_monitor import *
 from Functions.RequestInfo.cnnvd_monitor import *
 from Functions.Sql.sql_helper import *
 from Functions.Commons.github import getNews
 from Functions.Commons.mail import *
 from Functions.Commons.translate import get_cve_des_zh, translate
-from Functions.RequestInfo.github_monitor import wechat_data
+from Functions.RequestInfo.github_monitor import *
 from Functions.RequestInfo.MS_monitor import getMSDATA, wechat_MS
-
-#企业微信API相关配置
-Secret="pyUtd3*************WKjUEpNiQ"   #自定义应用的 Secret 举例：Secret="pyU*********jAWKjUEpNiQ"
-
-corpid="wwb*********c71708"                            #注册的企业 corpid  举例：corpid="wwb*********71708"
-
-github_headers="ghp_Z*************n4a5Pt2KhQqN"   #github_token   举例：github_headers="ghp_Zn*****Pt2KhQqN"
-
-#企业微信推送群聊部门及个人相关配置
-touser="Liu******ng"   #个人推送配置(选择群聊部门，请把此参数置为空) ,向这些用户账户发送，可以多人用 | 隔开 举例：touser="ZhangSan | LiShi"
-
-toparty=""          #群聊部门配置(选择个人推送配置，请把此参数置为空)，向群聊部门发送 举例：toparty="1"
-
-agentid=10****03     #ID配置  应用的 id 号 举例：agentid=1000003  注意：这里填整型
-
-urls="http://www.xxxx.com/"  #域名/IP配置 举例：urls="http://www.xxxx.com/"
-
-github_headers = {
-    'Authorization': github_headers  # 替换自己的github token     https://github.com/settings/tokens/new
-}
-last_total_count = 0
 
 #配置文件保存路径
 #D:\Git_Test\monitor\monitor
 #/usr/share/nginx/html/download/
+linux_path = cfg['linuxpath']['path']
 if sys.platform == "win32":
     dir_mon = "{home}\\".format(home=os.path.expanduser('~'))
 else:
-    dir_mon = "/usr/share/nginx/html/download/"
+    dir_mon = linux_path
 
+#last_total_count = 1
 #主函数
 def main():
-    excel_row = 1
+
     try:
+        excel_row = 1
+        #github_cve初始化
+        last_total_count = 1
+        #GitHub_iss初始化
+        last_iss_number = 1
+        #奇安信时间初始化
+        qax_last_time = 1
+        #奇安信时间初始化
+        ttt_last_time = 1
+        #先知社区时间初始化
+        xz_last_time = 1
+
+        owners = (cfg['github']['github_owner']).split(",")
+        projects = (cfg['github']['gitHub_project']).split(",")
+        iss_time = {}
+        for owner in owners:
+            for project in projects:
+                iss_time[owner+","+project] = 1
+                projects.pop(0)
+                break
+
         while True:
             file_path = dir_mon
             today_time_cnnvd = str(datetime.datetime.now().date()) + "_cnnvd"
@@ -69,12 +73,14 @@ def main():
             pageNo = 1
             flag = False #该标志用于控制是否继续请求CNNVD下一页的数据
             send_msg_flag = False #该标志用于控制是否需要向微信推送消息
+            send_mail_flag = False #用于是否启用邮件推送
             if is_database_empty():
                 flag = True
             #print(danger_level_nums()[0])
             #print(danger_level_nums()[1])
             #quit(0)
             #该while循环是操作cnnvd的。
+
             while True:
                 url = 'http://123.124.177.30/web/vulnerability/querylist.tag?pageno=' + str(pageNo) + '&repairLd='
                 header = {
@@ -103,6 +109,7 @@ def main():
                             #print(values)
                            # pageNo = pageNo + 1
                             send_msg_flag = True
+                            send_mail_flag = True
                         else:
                             pageNo = 1
                             flag = True
@@ -131,16 +138,22 @@ def main():
 
                         lever_test = str(danger_level_nums())
                         # 周五推送危险等级数量
+                        touser = cfg['wechatAPI']['touser']
+                        toparty = cfg['wechatAPI']['toparty']
+                        agentid = cfg['wechatAPI']['agentid']
+                        urls = cfg['wechatAPI']['urls']
                         data = wechat_cnnvd(lever_test,touser,toparty,agentid,urls)
                         print(lever_test,data[0])
                         # 推送微信
+                        Secret = cfg['wechatAPI']['Secret']
+                        corpid = cfg['wechatAPI']['corpid']
                         wechat_qiye(data[0],Secret,corpid)
                         #推送邮箱
-                        #dom = list_diction_to_html_cnnvd(list_work)
+                        dom = list_diction_to_html_cnnvd(list_work)
                         #取出要发送的链接
                         data_mail =data[2]
                         # 推送邮箱
-                       # main_user(str(data_mail))
+                        main_user(str(data_mail))
                         send_msg_flag = False
                     pageNo = 1 #重置页数
                     flag = False
@@ -160,7 +173,7 @@ def main():
             sheet1_ms = sheet_init_ms(f_ms) # 初始化工作
             ms_url = 'https://api.msrc.microsoft.com/sug/v2.0/zh-CN/vulnerability'
             wechat_is_flag = False
-            for cve_nums in range(0, 20):
+            for cve_nums in range(0, 15):
                 try:
                     one_ms = getMSDATA(ms_url, cve_nums)
                 except Exception  as e:
@@ -177,16 +190,25 @@ def main():
                     #插入数据库
                     insertToMS(values_ms)
                     wechat_is_flag = True
+                else:
+                    #退出本次微软循环
+                    break
             if wechat_is_flag:
                 #推送微信
+                touser = cfg['wechatAPI']['touser']
+                toparty = cfg['wechatAPI']['toparty']
+                agentid = cfg['wechatAPI']['agentid']
+                urls = cfg['wechatAPI']['urls']
                 data = wechat_MS(touser,toparty,agentid,urls)
                 data_ms = data[0]
                 print(data_ms)
+                Secret = cfg['wechatAPI']['Secret']
+                corpid = cfg['wechatAPI']['corpid']
                 wechat_qiye(data_ms,Secret,corpid)
                 # 取出要发送的链接
                 data_mail = data[2]
                 #推送邮箱
-                main_user(str(data_mail))
+                #main_user(str(data_mail))
                 wechat_is_flag = False
             f_ms.save(stream_ms)  # 保存数据到内存中
             value_ms = stream_ms.getvalue()  # 从内存中取出数据
@@ -204,34 +226,30 @@ def main():
                 save_dom_to_html_ms(dom)
             print("cve监控中 ...")
             # 抓取本年的cve
-            year = datetime.datetime.now().year
-            api = "https://api.github.com/search/repositories?q=CVE-{}&sort=updated".format(year)
-            # 请求API
-            req = requests.get(api, headers=github_headers, timeout=10).json()
-            total_count = req['total_count']
-            print(total_count)
+            touser = cfg['wechatAPI']['touser']
+            toparty = cfg['wechatAPI']['toparty']
+            agentid = cfg['wechatAPI']['agentid']
+            Secret = cfg['wechatAPI']['Secret']
+            corpid = cfg['wechatAPI']['corpid']
 
-            print(req['items'][0]['name'])
-            global last_total_count
-
-            if total_count != last_total_count:
-                # 推送正文内容
-                # 推送标题
-                last_total_count = total_count
-                text = '新的CVE信息'
-                # 获取 cve 名字 ，根据cve 名字，获取描述，并翻译
-                cve_name = req['items'][0]['name']
-                print(cve_name)
-                cve_zh = get_cve_des_zh(cve_name)
-                msg = "CVE编号：" + cve_name + "\r\n" + "CVE描述：" + cve_zh
-                cve_url = req['items'][0]['html_url']
-                print(cve_url)
-                # url2 = getNews()[0]
-                # 推送微信
-                data = wechat_data(touser,toparty,agentid,text,msg,cve_url)
-                print(data)
-                wechat_qiye(data,Secret,corpid)
-            time.sleep(60*60*24) #设置定时，每24小时查看一次
+            #推送微信cve
+            last_total_count = wechat_data_cve(touser,toparty,agentid,Secret,corpid,last_total_count)
+            print("github相关iuess监控中 ...")
+            #推送微信issues
+            owners = (cfg['github']['github_owner']).split(",")
+            projects = (cfg['github']['gitHub_project']).split(",")
+            #循环遍历issues
+            for owner in owners:
+                for project in projects:
+                    last_iss_number=wechat_iss_data(touser,agentid,Secret, corpid, owner,project,iss_time.get(owner+","+project))
+                    #更新自定义字典时间，用来判断第二次循环是否推送
+                    iss_time[owner+","+project] = last_iss_number
+                    projects.pop(0)
+                    break
+            #安全社区文章推送
+            qax_last_time,ttt_last_time,xz_last_time=wechat_secnote_data(touser, toparty, agentid, Secret, corpid, qax_last_time,ttt_last_time,xz_last_time)
+            sleep_time = cfg['time']['sleep_time']
+            time.sleep(int(sleep_time)) #设置定时，每24小时查看一次
 
     except KeyboardInterrupt:
         log_update_time = str(datetime.datetime.now().ctime())
@@ -240,5 +258,6 @@ def main():
         print('程序已停止')
 
 if __name__ == "__main__":
-    last_total_count = getNews()[0]
+
+    #last_total_count = getNews()[0]
     main()
