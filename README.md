@@ -22,23 +22,23 @@
 
 #### 添加配置文件
 
-这次所有的配置只需要在配置文件中进行修改。包括脚本循环间隔时间也在这里设置。如下图：
+这次所有的配置只需要在配置文件中进行修改。包括脚本循环间隔时间也是在这里设置。如下图：
 
-![图片](doc/13.png)
+![图片](https://lxflxf.oss-cn-beijing.aliyuncs.com/13.png)
 
 #### GitHub知名项目issues监控
 
 目前实现实时监控github中相关issues。并且实现自定义配置，想监控哪个知名组件，只需要在配置文件中填写相对应的github_owner和gitHub_project。**可以同时监控多个项目，在配置文件中使用逗号隔开**。我这里填写了三个项目进行演示，如下图所示：
 
-![图片](doc/14.png)**注意：github_owner和gitHub_project一定要一一对应，不然监控不到！**实现的效果如下图：
+![图片](https://lxflxf.oss-cn-beijing.aliyuncs.com/14.png)**注意：github_owner和gitHub_project一定要一一对应，不然监控不到！**实现的效果如下图：
 
-![图片](doc/15.png)
+![图片](https://lxflxf.oss-cn-beijing.aliyuncs.com/15.png)
 
 #### 安全社区文章监控
 
 目前实现了监控先知社区、跳跳糖社区、奇安信攻防社区三个社区的文章监控。启动脚本后，实现的效果如下图
 
-![图片](doc/16.png)
+![图片](D:\codego\monitor\monitor-main\doc\16.png)
 
 后续有时间的话应该会优化一下安全社区推送的相关代码逻辑，现在的代码复用太高了。有机会也会优化一下邮件推送。
 
